@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>درسی منصوبہ - Lesson Planner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .info-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .info-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-box label {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .info-box input, .info-box select {
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.95em;
+        }
+
+        .class-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .timetable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .timetable thead {
+            background: #667eea;
+            color: white;
+        }
+
+        .timetable th {
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #667eea;
+        }
+
+        .timetable td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+            background: #fff;
+        }
+
+        .timetable tbody tr:hover {
+            background: #f0f4ff;
+        }
+
+        .timetable tbody tr:nth-child(odd) {
+            background: #f9fafb;
+        }
+
+        .time-col {
+            font-weight: bold;
+            color: #667eea;
+            width: 100px;
+        }
+
+        .subject {
+            background: #e8eef7;
+            color: #667eea;
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 8px;
+        }
+
+        .urdu {
+            background: #ffe8e8 !important;
+            color: #d9534f !important;
+        }
+
+        .math {
+            background: #e8f5e9 !important;
+            color: #27ae60 !important;
+        }
+
+        .english {
+            background: #e3f2fd !important;
+            color: #1976d2 !important;
+        }
+
+        .science {
+            background: #fff3e0 !important;
+            color: #f57c00 !important;
+        }
+
+        .social {
+            background: #f3e5f5 !important;
+            color: #7b1fa2 !important;
+        }
+
+        .break {
+            background: #ffc107 !important;
+            color: #333 !important;
+        }
+
+        .break-col {
+            font-weight: bold;
+            color: #f57f17;
+        }
+
+        .notes-section {
+            margin-top: 30px;
+            background: #fff8e1;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .notes-section h3 {
+            color: #f57f17;
+            margin-bottom: 10px;
+        }
+
+        .notes-section textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ffc107;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 0.95em;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-print {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-print:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-reset {
+            background: #ddd;
+            color: #333;
+        }
+
+        .btn-reset:hover {
+            background: #ccc;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .button-group, .class-tabs, .info-section {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            .header h1 {
+                font-size: 1.8em;
+            }
+            .timetable th, .timetable td {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 درسی منصوبہ</h1>
+            <p>Daily Lesson Planner - کلاس 3، 4، 5</p>
+        </div>
+
+        <div class="info-section">
+            <div class="info-box">
+                <label>کلاس / Class:</label>
+                <select id="classSelect">
+                    <option value="3">کلاس 3 - Class 3</option>
+                    <option value="4">کلاس 4 - Class 4</option>
+                    <option value="5">کلاس 5 - Class 5</option>
+                </select>
+            </div>
+            <div class="info-box">
+                <label>تاریخ / Date:</label>
+                <input type="date" id="dateInput">
+            </div>
+            <div class="info-box">
+                <label>استاد / Teacher Name:</label>
+                <input type="text" id="teacherName" placeholder="نام درج کریں">
+            </div>
+            <div class="info-box">
+                <label>موضوع / Topic:</label>
+                <input type="text" id="topicInput" placeholder="آج کا موضوع">
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <h3 style="color: #667eea; margin-bottom: 15px;">رنگین شناخت / Subject Color Legend</h3>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color urdu"></div>
+                    <span>اردو</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color math"></div>
+                    <span>ریاضی</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color english"></div>
+                    <span>انگریزی</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color science"></div>
+                    <span>سائنس</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color social"></div>
+                    <span>سماجیات</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color break"></div>
+                    <span>وقفہ</span>
+                </div>
+            </div>
+        </div>
+
+        <table class="timetable">
+            <thead>
+                <tr>
+                    <th>وقت / Time</th>
+                    <th>موضوع / Subject</th>
+                    <th>سرگرمی / Activity</th>
+                    <th>وسائل / Resources</th>
+                    <th>نوٹس / Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="time-col">8:00 - 8:45</td>
+                    <td><span class="subject urdu">اردو</span></td>
+                    <td><input type="text" placeholder="درس، تحریر وغیرہ"></td>
+                    <td><input type="text" placeholder="کتاب، بورڈ"></td>
+                    <td><input type="text" placeholder="یادداشت"></td>
+                </tr>
+                <tr>
+                    <td class="time-col">8:45 - 9:30</td>
+                    <td><span class="subject math">ریاضی</span></td>
+                    <td><input type="text" placeholder="حل، مسائل"></td>
+                    <td><input type="text" placeholder="نمونہ"></td>
+                    <td><input type="text" placeholder="یادداشت"></td>
+                </tr>
+                <tr>
+                    <td class="time-col">9:30 - 10:15</td>
+                    <td><span class="subject english">انگریزی</span></td>
+                    <td><input type="text" placeholder="الفاظ، بول چال"></td>
+                    <td><input type="text" placeholder="کتاب"></td>
+                    <td><input type="text" placeholder="یادداشت"></td>
+                </tr>
+                <tr>
+                    <td class="break-col">10:15 - 10:30</td>
+                    <td><span class="subject break">وقفہ ☕</span></td>
+                    <td colspan="3" style="text-align: center; font-weight: bold;">کھیل اور آرام / Break Time</td>
+                </tr>
+                <tr>
+                    <td class="time-col">10:30 - 11:15</td>
+                    <td><span class="subject science">سائنس</span></td>
+                    <td><input type="text" placeholder="تجربہ، نظریہ"></td>
+                    <td><input type="text" placeholder="سامان"></td>
+                    <td><input type="text" placeholder="یادداشت"></td>
+                </tr>
+                <tr>
+                    <td class="time-col">11:15 - 12:00</td>
+                    <td><span class="subject social">سماجیات</span></td>
+                    <td><input type="text" placeholder="تاریخ، جغرافیہ"></td>
+                    <td><input type="text" placeholder="نقشہ، تصویریں"></td>
+                    <td><input type="text" placeholder="یادداشت"></td>
+                </tr>
+                <tr>
+                    <td class="break-col">12:00 - 1:00</td>
+                    <td><span class="subject break">دوپہر کا کھانا 🍽️</span></td>
+                    <td colspan="3" style="text-align: center; font-weight: bold;">دوپہر کا کھانا اور آرام / Lunch Break</td>
+                </tr>
+                <tr>
+                    <td class="time-col">1:00 - 1:45</td>
+                    <td><span class="subject urdu">اردو</span></td>
+                    <td><input type="text" placeholder="سبق کا جائزہ"></td>
+                    <td><input type="text" placeholder="کتاب"></td>
+                    <td><input type="text" placeholder="یادداشت"></td>
+                </tr>
+                <tr>
+                    <td class="time-col">1:45 - 2:30</td>
+                    <td><span class="subject math">ریاضی</span></td>
+                    <td><input type="text" placeholder="مشکل مسائل"></td>
+                    <td><input type="text" placeholder="تختہ سیاہ"></td>
+                    <td><input type="text" placeholder="یادداشت"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="notes-section">
+            <h3>🎯 اہم نوٹس / Important Notes:</h3>
+            <textarea id="notesArea" placeholder="آج کے سبق کے بارے میں اہم نکات یہاں لکھیں...&#10;Write important points about today's lesson here..."></textarea>
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-print" onclick="window.print()">🖨️ پرنٹ کریں / Print</button>
+            <button class="btn btn-reset" onclick="resetForm()">🔄 صاف کریں / Clear</button>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date
+        document.getElementById('dateInput').valueAsDate = new Date();
+
+        function resetForm() {
+            document.getElementById('classSelect').value = '3';
+            document.getElementById('dateInput').valueAsDate = new Date();
+            document.getElementById('teacherName').value = '';
+            document.getElementById('topicInput').value = '';
+            document.getElementById('notesArea').value = '';
+            
+            // Clear all input fields in the table
+            const inputs = document.querySelectorAll('.timetable input');
+            inputs.forEach(input => input.value = '');
+        }
+
+        // Save data to localStorage when inputs change
+        document.querySelectorAll('input, textarea, select').forEach(element => {
+            element.addEventListener('change', saveData);
+            element.addEventListener('input', saveData);
+        });
+
+        function saveData() {
+            const formData = {
+                class: document.getElementById('classSelect').value,
+                date: document.getElementById('dateInput').value,
+                teacher: document.getElementById('teacherName').value,
+                topic: document.getElementById('topicInput').value,
+                notes: document.getElementById('notesArea').value,
+                activities: []
+            };
+
+            document.querySelectorAll('.timetable tbody tr').forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs.length > 0) {
+                    formData.activities.push({
+                        activity: inputs[0].value,
+                        resources: inputs[1].value,
+                        notes: inputs[2].value
+                    });
+                }
+            });
+
+            localStorage.setItem('lessonPlan', JSON.stringify(formData));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('lessonPlan');
+            if (saved) {
+                const formData = JSON.parse(saved);
+                document.getElementById('classSelect').value = formData.class;
+                document.getElementById('dateInput').value = formData.date;
+                document.getElementById('teacherName').value = formData.teacher;
+                document.getElementById('topicInput').value = formData.topic;
+                document.getElementById('notesArea').value = formData.notes;
+
+                const inputs = document.querySelectorAll('.timetable tbody tr input');
+                formData.activities.forEach((activity, index) => {
+                    const rowInputs = Array.from(inputs).slice(index * 3, index * 3 + 3);
+                    if (rowInputs[0]) rowInputs[0].value = activity.activity;
+                    if (rowInputs[1]) rowInputs[1].value = activity.resources;
+                    if (rowInputs[2]) rowInputs[2].value = activity.notes;
+                });
+            }
+        }
+
+        // Load data on page load
+        window.addEventListener('load', loadData);
+    </script>
+</body>
+</html>
